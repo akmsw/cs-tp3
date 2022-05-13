@@ -53,7 +53,8 @@
 ![objdump](./objdump.png)
     - Analizando línea a línea, podemos observar que, a pesar de que el programa en la imagen esté cargado en la posición `0x00000000`, el linker se encargará de colocarlo a partir de la posición `0x7c00` para que pueda ser tratado como un MBR.
 - Grabar la imagen en un pendrive, probarla en una PC y subir una foto.
-    - A pesar de haber intentado múltiples veces de muchas formas distintas en varios dispositivos, no fue posible conseguir con éxito el correcto booteo del MBR con el programa "hello world" en una PC. Sin embargo, con el emulador `qemu` se obtuvieron resultados exitosos, como se muestra a continuación: ![qemu](./qemu.png)
+    - A pesar de haber intentado múltiples veces de muchas formas distintas en varios dispositivos, no fue posible conseguir con éxito el correcto booteo del MBR con el programa "hello world" en una PC. Sin embargo, con el emulador `qemu` se obtuvieron resultados exitosos, como se muestra a continuación:\
+![qemu](./qemu.png)
 - ¿Para qué se utiliza la opción `--oformat binary` en el linker?
     - De acuerdo con [las páginas del manual para el comando `ld`](https://linux.die.net/man/1/ld), la opción `--oformat` se utiliza para especificar el formato del archivo objeto resultante. En este caso, especificamos que luego del linking, el archivo generado será un archivo binario.
 
