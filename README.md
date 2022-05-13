@@ -23,7 +23,7 @@
 - ¿Qué es la ***Intel Management Engine BIOS Extension*** *(Intel MEBx)*?
     - La MEBx es la predecesora del CSME. Su propósito era el mismo, pero es una versión más antigua y con menos funcionalidades.
 - ¿Qué es el ***coreboot***?
-    - El coreboot (más formalmente conocido como LinuxBIOS) es una alternativa de código abierto (open source) a estos firmwares. Como debe ser ejecutado directamente en la motherboard, debe ser compatible con sus chipsets. Esto implica que no está disponible para cualquier modelo de motherboard, sino para algunos modelos específicos.
+    - El coreboot (más conocido como LinuxBIOS) es una alternativa de código abierto (open source) a estos firmwares. Como debe ser ejecutado directamente en la motherboard, debe ser compatible con sus chipsets. Esto implica que no está disponible para cualquier modelo de motherboard, sino para algunos modelos específicos.
 - ¿Qué productos incorporan el coreboot?
     - Compañías como Purism, System76 y Star Labs incorporan en sus dispositivos la alternativa coreboot.
 - ¿Cuáles son las ventajas de la utilización del coreboot?
@@ -35,22 +35,24 @@
 
 ## Linker
 - ¿Qué es y qué hace un ***linker***?
-    - El linker es un programa que toma uno o varios ficheros de tipo *objeto* (`.o`, `.obj`) generados a partid de un compilador y los combina en un único archivo ejecutable en forma binaria que englobará las instrucciones que debe ejecutar el procesador.
+    - El linker es un programa que toma uno o varios ficheros de tipo *objeto* (`.o`, `.obj`) generados a partir de un compilador y los combina en un único archivo ejecutable en forma binaria que englobará las instrucciones que debe ejecutar el procesador.
 - ¿Qué es la dirección que aparece en el script del linker?
-    - La dirección de memoria `0x7c00` indica una posición de memoria absoluta a partir de la cual se buscarán 512 bytes -correspondientes al Master Boot Record (MBR)-, especificando las instrucciones de arranque del sistema operativo y la tabla de particiones del dispositivo de almacenamiento.
+    - La dirección de memoria `0x7c00` indica una posición de memoria absoluta a partir de la cual se buscarán 512 bytes —correspondientes al Master Boot Record (MBR)—, especificando las instrucciones de arranque del sistema operativo y la tabla de particiones del dispositivo de almacenamiento.
 - ¿Por qué es necesaria esta dirección?
     - Esta dirección de memoria proviene de la primera generación de chips 8088 de Intel. Para mantener compatibilidad, los CPUs subsiguientes han mantenido la utilización de esta dirección para cargar el MBR.
-    - Cuando se utilizaban estos chips, el sistema operativo era 86-DOS. Este OS necesitaba un mínimo de 32KB de memoria, lo cual representamos en el rango hexadecimal 0x0000~0x7fff.
-    - El chip 8088 ocupa desde 0x0000 hasta 0x03ff para almacenar handlers de interrupciones, por lo que el rango de memoria utilizable que resta es 0x0400~0x7fff.
-    - Para dejar al OS la mayor cantidad de memoria contigua para utilizar, se decidió poner al MBR tan "alejado" como se pueda. Para esto, sabiendo que el MBR ocupa 512 bytes y que se necesitan 512 bytes adicionales para información generada por el MBR, se eligió la posición de del MBR 1024 bytes antes del límite de memoria. De esta forma: `0x7fff - 0x200 - 0x200 + 1 = 0x7c00`.
+    - Cuando se utilizaban estos chips, el sistema operativo era 86-DOS. Este OS necesitaba un mínimo de 32KB de memoria, lo cual representamos en el rango hexadecimal `0x0000 — 0x7fff`.
+    - El chip 8088 ocupa desde `0x0000` hasta `0x03ff` para almacenar handlers de interrupciones, por lo que el rango de memoria utilizable que resta es `0x0400 — 0x7fff`.
+    - Para dejar al OS la mayor cantidad de memoria contigua para utilizar, se decidió poner al MBR tan "alejado" como se pueda. Para esto, sabiendo que el MBR ocupa 512 bytes (`0x200`) y que se necesitan 512 bytes adicionales para información generada por el MBR, se eligió la posición del MBR 1024 bytes antes del límite de memoria. De esta forma: `0x7fff - 0x200 - 0x200 + 1 = 0x7c00`.
 - Compare la salida de `objdump` con `hd` y verifique dónde fue colocado el programa dentro de la imagen.
-    - ![hd](./hd.png)
-    - ![objdump](./objdump.png)
-    - Analizando línea a línea, podemos observar que, a pesar de que el programa en la imagen esté cargado en la posición 0x00000000, el linker se encargará de colocarlo a partir de la posición 0x7c00 para que pueda ser tratado como un MBR.
+    - Primero, vemos el output del comando `hd`:\
+![hd](./hd.png)
+    - Ahora, el output del comando `objdump`:\
+![objdump](./objdump.png)
+    - Analizando línea a línea, podemos observar que, a pesar de que el programa en la imagen esté cargado en la posición `0x00000000`, el linker se encargará de colocarlo a partir de la posición `0x7c00` para que pueda ser tratado como un MBR.
 - Grabar la imagen en un pendrive, probarla en una PC y subir una foto.
     - A pesar de haber intentado múltiples veces de muchas formas distintas en varios dispositivos, no fue posible conseguir con éxito el correcto booteo del MBR con el programa "hello world" en una PC. Sin embargo, con el emulador `qemu` se obtuvieron resultados exitosos, como se muestra a continuación: ![qemu](./qemu.png)
 - ¿Para qué se utiliza la opción `--oformat binary` en el linker?
-    - De acuerdo con las páginas del manual para el comando `ld`, la opción `--oformat` se utiliza para especificar el formato binario para el archivo objeto resultante. En este caso, especificamos que luego del linking, el archivo generado sea un archivo binario.
+    - De acuerdo con [las páginas del manual para el comando `ld`](https://linux.die.net/man/1/ld), la opción `--oformat` se utiliza para especificar el formato del archivo objeto resultante. En este caso, especificamos que luego del linking, el archivo generado será un archivo binario.
 
 ## Protected mode
 - Desarrollar un código en assembly que pueda pasar a modo protegido (sin macros).
