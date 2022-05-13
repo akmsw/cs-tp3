@@ -43,6 +43,9 @@
     - Cuando se utilizaban estos chips, el sistema operativo era 86-DOS. Este OS necesitaba un mínimo de 32KB de memoria, lo cual representamos en el rango hexadecimal `0x0000 — 0x7fff`.
     - El chip 8088 ocupa desde `0x0000` hasta `0x03ff` para almacenar handlers de interrupciones, por lo que el rango de memoria utilizable que resta es `0x0400 — 0x7fff`.
     - Para dejar al OS la mayor cantidad de memoria contigua para utilizar, se decidió poner al MBR tan "alejado" como se pueda. Para esto, sabiendo que el MBR ocupa 512 bytes (`0x200`) y que se necesitan 512 bytes adicionales para información generada por el MBR, se eligió la posición del MBR 1024 bytes antes del límite de memoria. De esta forma: `0x7fff - 0x200 - 0x200 + 1 = 0x7c00`.
+    - Artículos consultados:
+        - [*Why BIOS loads MBR into 0x7c00 in x86?*](https://www.glamenv-septzen.net/en/view/6)
+        - [*Why the memory address of the master boot record is 0x7c00?*](https://www.programmersought.net/en/article/324458798.html)
 - Compare la salida de `objdump` con `hd` y verifique dónde fue colocado el programa dentro de la imagen.
     - Primero, vemos el output del comando `hd`:\
 ![hd](./hd.png)
