@@ -59,9 +59,18 @@
     - De acuerdo con [las páginas del manual para el comando `ld`](https://linux.die.net/man/1/ld), la opción `--oformat` se utiliza para especificar el formato del archivo objeto resultante. En este caso, especificamos que luego del linking, el archivo generado será un archivo binario.
 
 ## Protected mode
-- Desarrollar un código en assembly que pueda pasar a modo protegido (sin macros).
-- ¿Cómo sería un programa que tenga dos descriptores de memoria diferentes: uno para cada segmento (código y datos) en espacios de memoria diferenciados? No es necesario implementarlo.
-- Cambiar los bits de acceso del segmento de datos para que sea de solo lectura e intentar escribir. ¿Qué sucede?
-- ¿Qué debería suceder a continuación? Verificarlo con ***gdb***.
-- En modo protegido: ¿con qué valor se cargan los registros de segmento?
-- ¿Por qué los registros se cargan con estos valores?
+- El programa desarrollado en assembly que pasa a modo protegido se encuentra en el archivo `tp3.asm`. Se puede compilar y ejecutar aprovechando el archivo *makefile* con el comando `make`.
+    - A continuación se proporciona una breve explicación secuencial de lo que se realiza en el código:
+        - Se deshabilitan las interrupciones.
+        - Se cargan las direcciones de memoria de la GDT.
+        - Se pone a 1 el bit menos significativo del registro CR0 para pasar a modo protegido.
+        - El diagrama de la tabla global de descriptores que se implementó es como el siguiente:
+![gdt_schema](./gdt_schema.png)
+        - Estando en modo protegido, se actualizan los valores de los registros de segmento DS, ES, FS, GS y SS.
+        - Se configura la memoria de video VGA y se muestra un mensaje custom en pantalla.
+            - Se eligió contrastar el texto de color blanco con un fondo de color azul. La configuración para esto se puede hallar [aquí](https://wiki.osdev.org/Printing_To_Screen).
+            - Podemos confirmar que estamos en modo protegido porque se asigna la dirección de memoria `0xb8000` que es la correspondiente en modo protegido a VGA para monitores multicolor.
+- Si un programa tiene el código y los datos en direcciones independientes de la
+memoria física, debe indicarse con 2 entradas en la tabla GDT, cada una denotando una base de segmento, a la cual se añade el offset o desplazamiento para obtener la dirección de la memoria principal de las instrucciones y datos de ese programa.
+- En caso de que la tabla GDT se defina con segmento de datos de sólo lectura, cuando se intente escribir en la memoria el mensaje, se activará la bandera de interrupción `IF`, del registro `EFLAGS`, impidiendo la ejecución del código restante, quedando en un bucle infinito.
+- En modo protegido, los registros de segmento se cargan con el valor `0x10`, que representa el número 16 en decimal, que es la cantidad de bytes que se deben dejar disponibles en la tabla GDT para almacenar el descriptor nulo (que no se utiliza de acuerdo a la documentación) y el descriptor de código que se carga primero.
