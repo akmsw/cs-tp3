@@ -63,13 +63,14 @@
     - A continuación se proporciona una breve explicación secuencial de lo que se realiza en el código:
         - Se deshabilitan las interrupciones.
         - Se cargan las direcciones de memoria de la GDT.
-        - Se pone a 1 el bit menos significativo del registro CR0 para pasar a modo protegido.
+        - Se pone a 1 el bit menos significativo del registro `CR0` para pasar a modo protegido.
         - El diagrama de la tabla global de descriptores que se implementó es como el siguiente:
 ![gdt_schema](./gdt_schema.png)
-        - Estando en modo protegido, se actualizan los valores de los registros de segmento DS, ES, FS, GS y SS.
-        - Se configura la memoria de video VGA y se muestra un mensaje custom en pantalla.
-            - Se eligió contrastar el texto de color blanco con un fondo de color azul. La configuración para esto se puede hallar [aquí](https://wiki.osdev.org/Printing_To_Screen).
-            - Podemos confirmar que estamos en modo protegido porque se asigna la dirección de memoria `0xb8000` que es la correspondiente en modo protegido a VGA para monitores multicolor.
+        - Estando en modo protegido, se actualizan los valores de los registros de segmento `DS`, `ES`, `FS`, `GS` y `SS`.
+        - Se configura la memoria de video VGA y se muestra un mensaje personalizado en pantalla.
+            - Se eligió contrastar el texto de color blanco con un fondo de color azul. La configuración para lograr esto se puede hallar [aquí](https://wiki.osdev.org/Printing_To_Screen).
+            - Podemos confirmar que estamos en modo protegido porque se asigna al texto a imprimir la dirección de memoria `0xb8000` que es la correspondiente en modo protegido a VGA para monitores multicolor, y se muestra donde queremos, como se muestra a continuación:
+![hw](./hw.png)
 - Si un programa tiene el código y los datos en direcciones independientes de la
 memoria física, debe indicarse con 2 entradas en la tabla GDT, cada una denotando una base de segmento, a la cual se añade el offset o desplazamiento para obtener la dirección de la memoria principal de las instrucciones y datos de ese programa.
 - En caso de que la tabla GDT se defina con segmento de datos de sólo lectura, cuando se intente escribir en la memoria el mensaje, se activará la bandera de interrupción `IF`, del registro `EFLAGS`, impidiendo la ejecución del código restante, quedando en un bucle infinito.
