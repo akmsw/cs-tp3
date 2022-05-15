@@ -4,4 +4,4 @@ all:
 	qemu-system-x86_64 --drive file=tp3.img,format=raw,index=0,media=disk
 
 clean:
-	rm *.o *.img tp3
+	rm *.o *.img
