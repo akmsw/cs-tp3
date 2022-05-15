@@ -69,8 +69,18 @@
         - Estando en modo protegido, se actualizan los valores de los registros de segmento `DS`, `ES`, `FS`, `GS` y `SS`.
         - Se configura la memoria de video VGA y se muestra un mensaje personalizado en pantalla.
             - Se eligió contrastar el texto de color blanco con un fondo de color azul. La configuración para lograr esto se puede hallar [aquí](https://wiki.osdev.org/Printing_To_Screen).
-            - Podemos confirmar que estamos en modo protegido porque se asigna al texto a imprimir la dirección de memoria `0xb8000` que es la correspondiente en modo protegido a VGA para monitores multicolor, y se muestra donde queremos, como se muestra a continuación:
+            - Podemos confirmar que estamos en modo protegido porque se asigna al texto a imprimir la dirección de memoria `0xb8000` que es la correspondiente en modo protegido a VGA para monitores multicolor, y se muestra donde queremos, como se ve a continuación:
 ![hw](./hw.png)
+    - Para poder debuggear el programa con GDB, se agregó en el archivo makefile las flags de compilación `-boot a -s -S -monitor stdio`. De esta manera, junto con el plugin **dashboard** utilizado en trabajos pasados, podemos abrir una terminal aparte y correr el debugger GDB indicándole que será un debugging de manera remota con las instrucciones:
+        - `target remote localhost:1234` (1234 es el puerto por defecto).
+        - `set architecture i8086` para indicar que es arquitectura x86.
+        - `b *0x7c00` para colocar un breakpoint en la línea donde comienza el programa.
+        - `c` para continuar hasta el breakpoint.
+        - A partir de este momento se puede ir línea por línea usando la instrucción `si` para GDB.
+        - Opcionalmente, podemos seleccionar ver sólo los registros de interés con el plugin dashboard con la instrucción `dashboard registers -style list 'rax rbx rcx rdx rsi rdi rbp rsp r8 r9 r10 r11 r12 r13 r14 r15 rip eflags cs ss ds es fs gs'`.
+        - Podemos ver capturas antes y durante la impresión de los caracteres en modo de debuggeo con GDB y dashboard a continuación:
+![gdb1](./gdb1.png)\
+![gdb2](./gdb2.png)
 - Si un programa tiene el código y los datos en direcciones independientes de la
 memoria física, debe indicarse con 2 entradas en la tabla GDT, cada una denotando una base de segmento, a la cual se añade el offset o desplazamiento para obtener la dirección de la memoria principal de las instrucciones y datos de ese programa.
 - En caso de que la tabla GDT se defina con segmento de datos de sólo lectura, cuando se intente escribir en la memoria el mensaje, se activará la bandera de interrupción `IF`, del registro `EFLAGS`, impidiendo la ejecución del código restante, quedando en un bucle infinito.
