@@ -17,14 +17,14 @@
             .word 0xffff                # Límite (bits 0-15)
             .word 0x0                   # Base (bits 0-15)
             .byte 0x0                   # Base (bits 16-23)
-            .byte 0b10011010            # 1001 (P DPL S) + 1010 (type código no accedido)
-            .byte 0b11001111            # 1100 (G D/B 0 AVL) + 1111 Límite (bits 16-19)
+            .byte 0b10011010            # 1001 (P DPL S) + 1010 (código - conforming - legible - no accedido)
+            .byte 0b11001111            # 1100 (granularidad - 32 bits - 0 - 0) + 1111 Límite (bits 16-19)
             .byte 0x0                   # Base (bits 24 -31)
         gdt_data:                       # Segmento descriptor de datos
             .word 0xffff                # Límite (bits 0-15)
             .word 0x0                   # Base (bits 0-15)
             .byte 0x0                   # Base (bits 16-23)
-            .byte 0b10010010            # 1001 (P DPL S) + 0010 (type datos no accedido)
+            .byte 0b10010010            # 1001 (P DPL S) + 0010 (datos - no crece hacia abajo - read only (o no) - no accedido)
             .byte 0b11001111            # 1100 (G D/B 0 AVL) + 1111 Límite (bits 16-19)
             .byte 0x0                   # Base (bits 24-31)
     gdt_end:

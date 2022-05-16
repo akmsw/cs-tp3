@@ -84,4 +84,6 @@
 - Si un programa tiene el código y los datos en direcciones independientes de la
 memoria física, debe indicarse con 2 entradas en la tabla GDT, cada una denotando una base de segmento, a la cual se añade el offset o desplazamiento para obtener la dirección de la memoria principal de las instrucciones y datos de ese programa.
 - En caso de que la tabla GDT se defina con segmento de datos de sólo lectura, cuando se intente escribir en la memoria el mensaje, se activará la bandera de interrupción `IF`, del registro `EFLAGS`, impidiendo la ejecución del código restante, quedando en un bucle infinito.
+    - Para ver esto, hay que modificar el bit de *read-only* en la sección `gdt_data` de la GDT. Si ponemos este bit a 0 (el segmento de datos es ahora de sólo lectura), compilamos y ejecutamos, podemos ver que el programa queda en un bucle infinito incapaz de terminar la ejecución del programa:
+![read_only](./read_only.png)
 - En modo protegido, los registros de segmento se cargan con el valor `0x10`, que representa el número 16 en decimal, que es la cantidad de bytes que se deben dejar disponibles en la tabla GDT para almacenar el descriptor nulo (que no se utiliza de acuerdo a la documentación) y el descriptor de código que se carga primero.
